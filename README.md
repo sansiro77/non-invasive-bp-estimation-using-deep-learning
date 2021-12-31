@@ -41,6 +41,17 @@ To reproduce the paper's results, the scripts described below have to be execute
 
 The PPG dataset used for training the neural architectures and the trained models themselves can be found at [Zenodo](https://zenodo.org/record/5590603).
 
+
+
+
+
+---
+
+
+
+
+
+
 ### Downloading data from the MIMIC-III database
 The script `download_mimic_iii_records.py` can be used to download the records used for PPG based training. The specific record names are provided in the file `MIMIC-III_ppg_dataset_records.txt`. The script can be called from the command line using the command
 ```
