@@ -5,4 +5,4 @@ kapre==0.3.5
 natsort==7.1.1
 pandas
 matplotlib
-scikit-learn==0.24.2
+scikit-learn
