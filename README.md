@@ -1,8 +1,11 @@
-test
-
 # Assessment of non-invasive blood pressure prediction from PPG and rPPG signals using deep learning
 
+## Datasets and trained models
+
+The PPG dataset used for training the neural architectures and the trained models themselves can be found at [Zenodo](https://zenodo.org/record/5590603).
+
 ## Introduction
+
 The code contained in this repository is intended to reproduce the results of the paper "Assessment of non-invasive blood pressure prediction from PPG and rPPG signals using deep learning" which can be accessed via the [Sensors Special Issue "Contactless Sensors for Healthcare](https://www.mdpi.com/1424-8220/21/18/6022) [[1]](#1). Contained herein are scripts for downloading data from the MIMC-II database, data preprocessing as well as  training neural networks for (r)PPG based blood pressure prediction.
 
 Trainings are performed using Tensorflow 2.4.1 and Python 3.8. The scripts can be executed from the command line. 
@@ -39,9 +42,6 @@ To reproduce the paper's results, the scripts described below have to be execute
 |5  |`ppg_personalization_mimic_iii.py` | Uses a pretrained neural network and fine tunes its final layers using PPG data from subjects from the test set of the MIMIC-III database|
 |6  |`retrain_rppg_personalization.py`  | Uses a pretrained nueral network and fine tunes it using rPPG data. |
 
-### Datasets and trained models
-
-The PPG dataset used for training the neural architectures and the trained models themselves can be found at [Zenodo](https://zenodo.org/record/5590603).
 
 
 
