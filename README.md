@@ -113,7 +113,7 @@ optional arguments:
                         Perform subject based (1) or sample based (0) division of the dataset
 ```
 ### Training neural networks using PPG signals
-The script `ppg_train_mimic_iii.py` trains neural networks using tfrecord data created by script `h5_to_tfrecord.py`. Available neural architectures include AlexNet [[2]](#2), ResNet [[3]](#3), an architecture published by Slapnicar et al. [[4]](#4) and an LSTM network. The networks are trained using an early stopping strategy. The network weights that achieved the lowest validation loss are subsequently used to estimate BP values on the test set. Test results are stored in a .csv file for later analysis. Model checkpoints are also stored for later fine tuning and personalization. The trained models used in the paper can be found at [Zenodo](https://zenodo.org/record/5590603).
+The script `ppg_train_mimic_iii.py` trains neural networks using tfrecord data created by script `h5_to_tfrecord.py`. Available neural architectures include AlexNet [[2]](#2), ResNet [[3]](#3), an architecture published by Slapnicar et al. [[4]](#4) and an LSTM network. The networks are trained using an early stopping strategy. The network weights that achieved the lowest validation loss are subsequently used to estimate BP values on the test set. Test results are stored in a .csv file for later analysis. Model checkpoints are also stored for later fine tuning and personalization. The trained models used in the paper can be found at Zenodo.
 ```
 usage: ppg_training_mimic_iii.py [-h] [--arch ARCH] [--lr LR] [--batch_size BATCH_SIZE] [--winlen WINLEN] [--epochs EPOCHS]
                                  [--gpuid GPUID]
