@@ -33,7 +33,7 @@ To reproduce the paper's results, the scripts described below have to be execute
 |   |Script                             | Description                                                   |
 |---|-----------------------------------|---------------------------------------------------------------|
 |1  |`download_mimic_iii_records.py`    |Downloads data from the MIMIC-III database
-|2  |`prepare_MIMIC_dataset.py`         |This script is used for:<ul><li>Preprocessing</li><li>dividing signals into windows</li><li>extracting ground truth SBP and DBP from signal windows</li><li>Storing singal/BP-value pairs in hdf5 format</li></ul> Alternatively, the dataset can be downloaded from [Zenodo](https://zenodo.org/record/5590603) (32 GB)|
+|2  |`prepare_MIMIC_dataset.py`         |This script is used for:<ul><li>Preprocessing</li><li>dividing signals into windows</li><li>extracting ground truth SBP and DBP from signal windows</li><li>Storing singal/BP-value pairs in hdf5 format</li></ul> Alternatively, the dataset can be downloaded from Zenodo (32 GB)|
 |3  |`h5_to_tfrecord.py`         | divides the data into training, validation and test set and converts the data to the .tfrecord format which will be used during training|
 |4  |`ppg_train_mimic_iii.py`           | trains neural networks for BP prediction using PPG data; saves the trained model for later fine tuning and personalization using (r)PPG data|
 |5  |`ppg_personalization_mimic_iii.py` | Uses a pretrained neural network and fine tunes its final layers using PPG data from subjects from the test set of the MIMIC-III database|
@@ -73,7 +73,7 @@ The Script `prepare_MIMIC_dataset.py` preprocesses the data downloaded by `downl
 
 The maximum number of samples per subject and for the whole dataset can be defined. The dataset is saved to a .h5 file for further processing.
 
-Alternatively, the dataset can be downloaded from [Zenodo](https://zenodo.org/record/5590603) (32 GB)
+Alternatively, the dataset can be downloaded from Zenodo (32 GB)
 
 ```
 usage: prepare_MIMIC_dataset.py [-h] [--win_len WIN_LEN] [--win_overlap WIN_OVERLAP] [--maxsampsubject MAXSAMPSUBJECT]
