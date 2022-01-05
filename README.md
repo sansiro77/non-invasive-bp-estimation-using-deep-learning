@@ -11,22 +11,14 @@ The code contained in this repository is intended to reproduce the results of th
 Trainings are performed using Tensorflow 2.4.1 and Python 3.8. The scripts can be executed from the command line. 
 
 ## Installation
-To create a virtual environment using Python 3.8 as interpreter the `virtualenv` package is required. It can be installed using the command
 ```
-pip install virtualenv
-```
-The virtual environment can then be created using the command
-```
-virtualenv --python=/usr/bin/python3.8 venv/
-```
-The virtual environment can be activated using the command
-```angular2html
+python3 -m venv venv
 source venv/bin/activate
-```
-Necessary python packages can be installed using the command
-```
 pip install -r requirements.txt
 ```
+
+
+
 ## Using the scripts
 ### Overview
 This repository contains scripts to reproduce the [paper's](https://www.mdpi.com/1424-8220/21/18/6022) result regarding the BP prediction based on the MIMIC-B dataset as well as the camera based BP prediction. Analyses based on the MIMIC-A dataset are not covered by this repository.
