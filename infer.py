@@ -44,9 +44,10 @@ dependencies = {
         'ReLU': ks.layers.ReLU,
         'STFT': STFT,
         'Magnitude': Magnitude,
-        'MagnitudeToDecibel': MagnitudeToDecibel
+        'MagnitudeToDecibel': MagnitudeToDecibel}
 
 model = ks.load_model('ckpts/2022-06-01_alexnet_thu-jan-6-1426_cb.h5', custom_objects=dependencies)
+
 
 
 
@@ -58,6 +59,7 @@ for i in range(int(2.5e5//32)):
     BP_est = model.predict(ppg_test)
     print('BP_est', BP_est)
     print('BP_true', BP_true)
+
 
 
 
