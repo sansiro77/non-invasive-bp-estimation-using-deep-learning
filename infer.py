@@ -46,10 +46,7 @@ dependencies = {
         'Magnitude': Magnitude,
         'MagnitudeToDecibel': MagnitudeToDecibel}
 
-model = ks.load_model('ckpts/2022-06-01_alexnet_thu-jan-6-1426_cb.h5', custom_objects=dependencies)
-
-
-
+model = ks.models.load_model('ckpts/2022-06-01_alexnet_thu-jan-6-1426_cb.h5', custom_objects=dependencies)
 
 
 test_dataset = create_dataset(tfrecords_dir='/data', tfrecord_basename='MIMIC_III_ppg', win_len=875, batch_size=32, modus='test')
