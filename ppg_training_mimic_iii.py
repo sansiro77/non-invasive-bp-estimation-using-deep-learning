@@ -64,9 +64,6 @@ def create_dataset(tfrecords_dir, tfrecord_basename, win_len=875, batch_size=32,
     pattern = join(tfrecords_dir, modus, tfrecord_basename + "_" + modus + "_?????_of_?????.tfrecord")
     dataset = tf.data.TFRecordDataset.list_files(pattern)
     
-    print('debug len(dataset)', len(dataset))
-    dataset = dataset.take(10)               # debug
-    print('debug len(dataset)', len(dataset))
 
     if modus == 'train':
         dataset = dataset.shuffle(1000, reshuffle_each_iteration=True)

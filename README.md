@@ -202,9 +202,9 @@ optional arguments:
                         If 0, uses the first 20 % of the test subject's data for testing, otherwise select randomly (only applies if --pers == 1)
 
 ```
-## Using the pretrained models(TODO)
-The subfolder `trained_models` contains .h5-files containing models definitions and weights. The models wer trained using a non-mixed dataset as described in [[1]](#1). To use the networks for prediction/fine-tuning, input and output data must meet the following requirements:
-* input data must have a length of 875 samples (corresponds to 7 seconds using a sampling frequency of 125 Hz)
+## Using the pretrained models
+The subfolder `trained_models` contains .h5-files containing models definitions and weights. The models were trained using a non-mixed dataset as described in [[1]](#1). To use the networks for prediction/fine-tuning, input and output data must meet the following requirements:
+* input data must have a length of 875 samples (win_len, corresponds to 7 seconds using a sampling frequency of 125 Hz)
 * SBP and DBP must be provided separately as there is one output node for each value
 
 The models can be imported the following way:
