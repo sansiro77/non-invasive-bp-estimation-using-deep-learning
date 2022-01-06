@@ -65,7 +65,7 @@ def create_dataset(tfrecords_dir, tfrecord_basename, win_len=875, batch_size=32,
     dataset = tf.data.TFRecordDataset.list_files(pattern)
     
     print('debug len(dataset)', len(dataset))
-    dataset = dataset.take(1000)               # debug
+    dataset = dataset.take(10)               # debug
     print('debug len(dataset)', len(dataset))
 
     if modus == 'train':
@@ -113,11 +113,12 @@ def ppg_train_mimic_iii(architecture,
                         earlystopping=True):
 
     # create datasets for training, validation and testing using .tfrecord files
-    test_dataset = create_dataset(data_dir, tfrecord_basename, win_len=win_len, batch_size=batch_size,
-                                  modus='test')
+
     train_dataset = create_dataset(data_dir, tfrecord_basename, win_len=win_len, batch_size=batch_size, modus='train')
     val_dataset = create_dataset(data_dir, tfrecord_basename, win_len=win_len, batch_size=batch_size,
                                  modus='val')
+    test_dataset = create_dataset(data_dir, tfrecord_basename, win_len=win_len, batch_size=batch_size,
+                                  modus='test')
 
 
     data_in_shape = (win_len,1)
