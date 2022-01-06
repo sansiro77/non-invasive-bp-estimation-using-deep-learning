@@ -83,6 +83,7 @@ def create_dataset(tfrecords_dir, tfrecord_basename, win_len=875, batch_size=32,
     return dataset
 
 def get_model(architecture, input_shape, UseDerivative=False):
+    print('debug architecture', architecture)
     return {
         'resnet': ResNet50_1D(input_shape, UseDerivative=UseDerivative),
         'alexnet': AlexNet_1D(input_shape, UseDerivative=UseDerivative),
@@ -119,6 +120,7 @@ def ppg_train_mimic_iii(architecture,
 
     # load the neurarchitecture
     model = get_model(architecture, data_in_shape, UseDerivative=UseDerivative)
+    print(model.summary())
 
     # callback for logging training and validation results
     csvLogger_cb = tf.keras.callbacks.CSVLogger(

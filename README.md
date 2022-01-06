@@ -142,6 +142,14 @@ optional arguments:
 
 
 
+```
+python3 ppg_training_mimic_iii.py thu-jan-6-1043 /data/ppg_dataset/ results ckpts
+```
+
+
+
+
+
 ### Personalizing pretrained neural networks using PPG data
 
 The script `ppg_personalization_mimic_iii.py` takes a set of test subjects and fine tunes neural network that were trained based on PPG data. The goal is to improve the MAE on those test subjects by using 20 % of each test subject's data for retraining. These 20 % can be dranwn randomly or systematically (the first 20 %). The remaining 80 % are used for validation. The script performs BP predictions using the validation data before and after personalization for comparison. Results are stored in a .csv file for later analysis. 
