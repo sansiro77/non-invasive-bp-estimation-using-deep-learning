@@ -91,8 +91,8 @@ def get_model(architecture, input_shape, UseDerivative=False):
     }[architecture]
 
 def ppg_train_mimic_iii(architecture,
-                        DataDir,
-                        ResultsDir,
+                        data_dir,
+                        results_dir,
                         CheckpointDir,
                         tensorboard_tag,
                         tfrecord_basename,
@@ -108,10 +108,10 @@ def ppg_train_mimic_iii(architecture,
                         earlystopping=True):
 
     # create datasets for training, validation and testing using .tfrecord files
-    test_dataset = create_dataset(DataDir, tfrecord_basename, win_len=win_len, batch_size=batch_size,
+    test_dataset = create_dataset(data_dir, tfrecord_basename, win_len=win_len, batch_size=batch_size,
                                   modus='test')
-    train_dataset = create_dataset(DataDir, tfrecord_basename, win_len=win_len, batch_size=batch_size, modus='train')
-    val_dataset = create_dataset(DataDir, tfrecord_basename, win_len=win_len, batch_size=batch_size,
+    train_dataset = create_dataset(data_dir, tfrecord_basename, win_len=win_len, batch_size=batch_size, modus='train')
+    val_dataset = create_dataset(data_dir, tfrecord_basename, win_len=win_len, batch_size=batch_size,
                                  modus='val')
 
 
@@ -122,7 +122,7 @@ def ppg_train_mimic_iii(architecture,
 
     # callback for logging training and validation results
     csvLogger_cb = tf.keras.callbacks.CSVLogger(
-        filename=join(ResultsDir,experiment_name + '_learningcurve.csv')
+        filename=join(results_dir,experiment_name + '_learningcurve.csv')
     )
 
     # checkpoint callback
@@ -133,7 +133,7 @@ def ppg_train_mimic_iii(architecture,
 
     # tensorboard callback
     tensorbard_cb = tf.keras.callbacks.TensorBoard(
-        log_dir=join(ResultsDir, 'tb', tensorboard_tag),
+        log_dir=join(results_dir, 'tb', tensorboard_tag),
         histogram_freq=0,
         write_graph=False
     )
@@ -191,7 +191,7 @@ def ppg_train_mimic_iii(architecture,
                                         'DBP_est' : np.squeeze(BP_est[1])})
         test_results = test_results.append(TestBatchResult)
 
-    ResultsFile = join(ResultsDir,experiment_name + '_test_results.csv')
+    ResultsFile = join(results_dir,experiment_name + '_test_results.csv')
     test_results.to_csv(ResultsFile)
 
     idx_min = np.argmin(history.history['val_loss'])
@@ -202,29 +202,29 @@ def ppg_train_mimic_iii(architecture,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('ExpName', type=str, help="unique name for the training")
-    parser.add_argument('datadir', type=str, help="folder containing the train, val and test subfolders containing tfrecord files")
-    parser.add_argument('resultsdir', type=str, help="Directory in which results are stored")
-    parser.add_argument('chkptdir', type=str, help="directory used for storing model checkpoints")
+    parser.add_argument('experiment_name', type=str, help="unique name for the training")
+    parser.add_argument('data_dir', type=str, help="directory containing the train, val and test subdirectories containing tfrecord files")
+    parser.add_argument('results_dir', type=str, help="directory in which results are stored")
+    parser.add_argument('chkpt_dir', type=str, help="directory used for storing model checkpoints")
     parser.add_argument('--arch', type=str, default="alexnet", help="neural architecture used for training (alexnet (default), resnet,  slapnicar, lstm)")
     parser.add_argument('--lr', type=float, default=0.003, help="initial learning rate (default: 0.003)")
     parser.add_argument('--batch_size', type=int, default=32, help="batch size used for training (default: 32)")
-    parser.add_argument('--winlen', type=int, default=875, help="length of the ppg windows in samples (default: 875)")
+    parser.add_argument('--win_len', type=int, default=875, help="length of the ppg windows in samples (default: 875)")
     parser.add_argument('--epochs', type=int, default=60, help="maximum number of epochs for training (default: 60)")
     parser.add_argument('--gpuid', type=str, default=None, help="GPU-ID used for training in a multi-GPU environment (default: None)")
     args = parser.parse_args()
 
     if len(argv) > 1:
         architecture = args.arch
-        experiment_name = args.ExpName
+        experiment_name = args.experiment_name
         experiment_name = datetime.now().strftime("%Y-%d-%m") + '_' + architecture + '_' + experiment_name
-        DataDir = args.datadir
-        ResultsDir = args.resultsdir
-        CheckpointDir = args.chkptdir
+        data_dir = args.data_dir
+        results_dir = args.results_dir
+        CheckpointDir = args.chkpt_dir
         tb_tag = experiment_name
         lr = args.lr if args.lr > 0 else None
         batch_size = args.batch_size
-        win_len = args.winlen
+        win_len = args.win_len
         N_epochs = args.epochs
         if args.gpuid is not None:
             environ["CUDA_VISIBLE_DEVICES"] = args.gpuid
@@ -232,8 +232,8 @@ if __name__ == "__main__":
         architecture = 'lstm'
         experiment_name = datetime.now().strftime("%Y-%d-%m") + '_' + architecture + '_' + 'mimic_iii_ppg_nonmixed_pretrain'
         HomePath = expanduser("~")
-        DataDir = join(HomePath,'data','MIMIC-III_BP', 'tfrecords_nonmixed')
-        ResultsDir = join(HomePath,'data','MIMIC-III_BP', 'results')
+        data_dir = join(HomePath,'data','MIMIC-III_BP', 'tfrecords_nonmixed')
+        results_dir = join(HomePath,'data','MIMIC-III_BP', 'results')
         CheckpointDir = join(HomePath,'data','MIMIC-III_BP', 'checkpoints')
         tb_tag = architecture + '_' + 'mimic_iii_ppg_pretrain'
         batch_size = 64
@@ -244,8 +244,8 @@ if __name__ == "__main__":
     tfrecord_basename = 'MIMIC_III_ppg'
 
     ppg_train_mimic_iii(architecture,
-                        DataDir,
-                        ResultsDir,
+                        data_dir,
+                        results_dir,
                         CheckpointDir,
                         tb_tag,
                         tfrecord_basename,
