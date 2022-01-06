@@ -220,7 +220,7 @@ if __name__ == "__main__":
         experiment_name = datetime.now().strftime("%Y-%d-%m") + '_' + architecture + '_' + experiment_name
         data_dir = args.data_dir
         results_dir = args.results_dir
-        CheckpointDir = args.ckpt_dir
+        CheckpointDir = args.ckpts_dir
         tb_tag = experiment_name
         lr = args.lr if args.lr > 0 else None
         batch_size = args.batch_size
