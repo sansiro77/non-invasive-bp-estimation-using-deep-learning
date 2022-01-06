@@ -27,8 +27,8 @@ To reproduce the paper's results, the scripts described below have to be execute
 
 |   |Script                             | Description                                                   |
 |---|-----------------------------------|---------------------------------------------------------------|
-|1  |`download_mimic_iii_records.py`    |Downloads data from the MIMIC-III database
-|2  |`prepare_MIMIC_dataset.py`         |This script is used for:<ul><li>Preprocessing</li><li>dividing signals into windows</li><li>extracting ground truth SBP and DBP from signal windows</li><li>Storing singal/BP-value pairs in hdf5 format</li></ul> Alternatively, the dataset can be downloaded from Zenodo (32 GB)|
+|1  |`download_mimic_iii_records.py`    |Downloads data from the MIMIC-III database|
+|2  |`prepare_MIMIC_dataset.py`         |This script is used for:<ul><li>Preprocessing</li><li>dividing signals into windows</li><li>extracting ground truth SBP and DBP from signal windows</li><li>Storing singal/BP-value pairs in hdf5 format</li></ul> Alternatively, the prepared dataset can be downloaded from Zenodo (32 GB)|
 |3  |`h5_to_tfrecord.py`         | divides the data into training, validation and test set and converts the data to the .tfrecord format which will be used during training|
 |4  |`ppg_train_mimic_iii.py`           | trains neural networks for BP prediction using PPG data; saves the trained model for later fine tuning and personalization using (r)PPG data|
 |5  |`ppg_personalization_mimic_iii.py` | Uses a pretrained neural network and fine tunes its final layers using PPG data from subjects from the test set of the MIMIC-III database|
@@ -65,7 +65,7 @@ The Script `prepare_MIMIC_dataset.py` preprocesses the data downloaded by `downl
 
 The maximum number of samples per subject and for the whole dataset can be defined. The dataset is saved to a .h5 file for further processing.
 
-Alternatively, the dataset can be downloaded from Zenodo (32 GB)
+Alternatively, the prepared dataset can be downloaded from Zenodo (32 GB)
 
 ```
 usage: prepare_MIMIC_dataset.py [-h] [--win_len WIN_LEN] [--win_overlap WIN_OVERLAP] [--maxsampsubject MAXSAMPSUBJECT]
@@ -104,7 +104,18 @@ optional arguments:
   --divbysubj DIVBYSUBJ
                         Perform subject based (1) or sample based (0) division of the dataset
 ```
+
+
+```
+ python3 h5_to_tfrecord.py /data/MIMIC-III_ppg_dataset.h5 /data/ppg_dataset
+```
+
+
+
+
+
 ### Training neural networks using PPG signals
+
 The script `ppg_train_mimic_iii.py` trains neural networks using tfrecord data created by script `h5_to_tfrecord.py`. Available neural architectures include AlexNet [[2]](#2), ResNet [[3]](#3), an architecture published by Slapnicar et al. [[4]](#4) and an LSTM network. The networks are trained using an early stopping strategy. The network weights that achieved the lowest validation loss are subsequently used to estimate BP values on the test set. Test results are stored in a .csv file for later analysis. Model checkpoints are also stored for later fine tuning and personalization. The trained models used in the paper can be found at Zenodo.
 ```
 usage: ppg_training_mimic_iii.py [-h] [--arch ARCH] [--lr LR] [--batch_size BATCH_SIZE] [--winlen WINLEN] [--epochs EPOCHS]
@@ -127,7 +138,12 @@ optional arguments:
   --epochs EPOCHS       maximum number of epochs for training (default: 60)
   --gpuid GPUID         GPU-ID used for training in a multi-GPU environment (default: None)
 ```
+
+
+
+
 ### Personalizing pretrained neural networks using PPG data
+
 The script `ppg_personalization_mimic_iii.py` takes a set of test subjects and fine tunes neural network that were trained based on PPG data. The goal is to improve the MAE on those test subjects by using 20 % of each test subject's data for retraining. These 20 % can be dranwn randomly or systematically (the first 20 %). The remaining 80 % are used for validation. The script performs BP predictions using the validation data before and after personalization for comparison. Results are stored in a .csv file for later analysis. 
 ```
 usage: ppg_personalization_mimic_iii.py [-h] [--lr LR] [--batch_size BATCH_SIZE] [--winlen WINLEN] [--epochs EPOCHS]
