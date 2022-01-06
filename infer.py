@@ -47,7 +47,7 @@ dependencies = {
         'MagnitudeToDecibel': MagnitudeToDecibel
 
 model = ks.load_model('ckpts/2022-06-01_alexnet_thu-jan-6-1426_cb.h5', custom_objects=dependencies)
-model.predict()
+
 
 
 
