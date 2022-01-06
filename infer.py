@@ -44,7 +44,7 @@ dependencies = {
         'ReLU': ks.layers.ReLU,
         'STFT': STFT,
         'Magnitude': Magnitude,
-        'MagnitudeToDecibel': MagnitudeToDecibel
+        'MagnitudeToDecibel': MagnitudeToDecibel}
 
 model = ks.load_model('ckpts/2022-06-01_alexnet_thu-jan-6-1426_cb.h5', custom_objects=dependencies)
 
