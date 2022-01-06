@@ -205,7 +205,7 @@ if __name__ == "__main__":
     parser.add_argument('experiment_name', type=str, help="unique name for the training")
     parser.add_argument('data_dir', type=str, help="directory containing the train, val and test subdirectories containing tfrecord files")
     parser.add_argument('results_dir', type=str, help="directory in which results are stored")
-    parser.add_argument('ckpt_dir', type=str, help="directory used for storing model checkpoints")
+    parser.add_argument('ckpts_dir', type=str, help="directory used for storing model checkpoints")
     parser.add_argument('--arch', type=str, default="alexnet", help="neural architecture used for training (alexnet (default), resnet,  slapnicar, lstm)")
     parser.add_argument('--lr', type=float, default=0.003, help="initial learning rate (default: 0.003)")
     parser.add_argument('--batch_size', type=int, default=32, help="batch size used for training (default: 32)")
