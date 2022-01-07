@@ -145,7 +145,7 @@ optional arguments:
 ```
 screen -S mySession
 source venv/bin/activate
-python3 ppg_training_mimic_iii.py thu-jan-6-1335 /data/ppg_dataset/ results ckpts --arch lstm --epochs 1
+python3 ppg_training_mimic_iii.py thu-jan-6-1335 /data/ppg_dataset/ results ckpts --epochs 1
 #ctrl+a ctrl+d
 screen -r
 ```
