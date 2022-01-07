@@ -50,10 +50,9 @@ dependencies = {
         'Magnitude': Magnitude,
         'MagnitudeToDecibel': MagnitudeToDecibel}
 
-model = ks.models.load_model('ckpts/2022-06-01_alexnet_thu-jan-6-1426_cb.h5', custom_objects=dependencies)
-
-
+model = ks.models.load_model('ckpts/lstm_ppg_nonmixed.h5', custom_objects=dependencies)
 test_dataset = create_dataset(tfrecords_dir='/data/ppg_dataset', tfrecord_basename='MIMIC_III_ppg', win_len=875, batch_size=32, modus='test')
+
 test_dataset = iter(test_dataset)
 for i in range(int(2.5e5//32)):
     ppg_test, BP_true = test_dataset.next()
