@@ -55,7 +55,9 @@ test_dataset = create_dataset(tfrecords_dir='/data/ppg_dataset', tfrecord_basena
 
 test_dataset = iter(test_dataset)
 for i in range(int(2.5e5//32)):
+
     ppg_test, BP_true = test_dataset.next()
+    print('ppg_test:\n', ppg_test)
     BP_est = model.predict(ppg_test)
     print('SBP_est:\n', BP_est[0])
     print('SBP_true:\n', BP_true[0])
