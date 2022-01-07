@@ -203,6 +203,13 @@ optional arguments:
 
 ```
 ## Using the pretrained models
+
+input shape=(batch_size, seq_len)=(32, 875)
+
+input data must have a length of 875 samples (corresponds to 7 seconds using a sampling frequency of 125 Hz) 
+
+
+
 ```
 python3 infer.py
 ```
