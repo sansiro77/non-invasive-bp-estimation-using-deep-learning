@@ -203,24 +203,11 @@ optional arguments:
 
 ```
 ## Using the pretrained models
-The subfolder `trained_models` contains .h5-files containing models definitions and weights. The models were trained using a non-mixed dataset as described in [[1]](#1). To use the networks for prediction/fine-tuning, input and output data must meet the following requirements:
-* input data must have a length of 875 samples (win_len, corresponds to 7 seconds using a sampling frequency of 125 Hz)
-* SBP and DBP must be provided separately as there is one output node for each value
-
-The models can be imported the following way:
-```python
-import tensorflow.keras as ks
-from kapre import STFT, Magnitude, MagnitudeToDecibel
-
-dependencies = {
-        'ReLU': ks.layers.ReLU,
-        'STFT': STFT,
-        'Magnitude': Magnitude,
-        'MagnitudeToDecibel': MagnitudeToDecibel
-
-model = ks.load_model(<PathToModelFile>, custom_objects=dependencies)
 ```
-Predictions can then be made using the `model.predict()` function. 
+python3 infer.py
+```
+
+
 
 ## References
 <a id="1">[1]</a> Schrumpf, F.; Frenzel, P.; Aust, C.; Osterhoff, G.; Fuchs, M. Assessment of Non-Invasive Blood Pressure Prediction from PPG and rPPG Signals Using Deep Learning. Sensors 2021, 21, 6022. https://doi.org/10.3390/s21186022 
