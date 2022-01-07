@@ -57,8 +57,11 @@ test_dataset = iter(test_dataset)
 for i in range(int(2.5e5//32)):
     ppg_test, BP_true = test_dataset.next()
     BP_est = model.predict(ppg_test)
-    print('BP_est', BP_est)
-    print('BP_true', BP_true)
+    print('SBP_est:\n', BP_est[0])
+    print('SBP_true:\n', BP_true[0])
+    print('DBP_est:\n', BP_est[1])
+    print('DBP_true:\n', BP_true[1])
+    break
 
 
 
