@@ -235,3 +235,14 @@ Predictions can then be made using the `model.predict()` function.
     Deep Neural Network“, Sensors, Bd. 19, Nr. 15, S. 3420, Aug. 2019, doi: 10.3390/s19153420.
 
 <a id="5">[5]</a> W. Wang, A. C. den Brinker, S. Stuijk, und G. de Haan, „Algorithmic Principles of Remote PPG“, IEEE Transactions on Biomedical Engineering, Bd. 64, Nr. 7, S. 1479–1491, Juli 2017, doi: 10.1109/TBME.2016.2609282.
+
+
+
+
+
+```
+ssh -i xiangzhao.pem ubuntu@54.189.7.101
+```
+
+
+

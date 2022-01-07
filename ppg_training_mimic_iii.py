@@ -189,6 +189,7 @@ def ppg_train_mimic_iii(architecture,
     for i in range(int(Ntest//batch_size)):
         ppg_test, BP_true = test_dataset.next()
         BP_est = model.predict(ppg_test)
+        print('debug BP_est', BP_est)
         TestBatchResult = pd.DataFrame({'SBP_true' : BP_true[0].numpy(),
                                         'DBP_true' : BP_true[1].numpy(),
                                         'SBP_est' : np.squeeze(BP_est[0]),
