@@ -1,4 +1,6 @@
 from os.path import join
+from functools import partial
+
 import tensorflow as tf
 
 def read_tfrecord(example, win_len=875):
