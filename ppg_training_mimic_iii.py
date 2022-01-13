@@ -34,7 +34,7 @@ from functools import partial
 from datetime import datetime
 import argparse
 
-import tensorflow as tf
+# import tensorflow as tf
 import pandas as pd
 import numpy as np
 
@@ -42,14 +42,13 @@ import numpy as np
 # for device in gpu_devices:
 #     tf.config.experimental.set_memory_growth(device, True)
 
-from models.define_ResNet_1D import ResNet50_1D
-from models.define_AlexNet_1D import AlexNet_1D
+# from models.define_ResNet_1D import ResNet50_1D
+# from models.define_AlexNet_1D import AlexNet_1D
 from models.define_LSTM import LSTM
 
 # from models.slapnicar_model import raw_signals_deep_ResNet
 
 import matplotlib.pyplot as plt
-import pandas as pd
 import h5py
 from sklearn.model_selection import train_test_split
 
@@ -60,18 +59,45 @@ import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 
 class MyDataSet(Dataset):
-    def __init__(self, X, Y, ID):
-        self.X = X
-        self.Y = Y
-        self.ID = ID
+    def __init__(self, h5_file, idx_list, win_len):
+        self.h5_file = h5_file
+        self.idx_list = idx_list
+        self.win_len = win_len
 
     def __len__(self):
-        return len(self.X)
+        return len(self.idx_list)
 
     def __getitem__(self, index):
-        return self.X[index], self.Y[index], self.ID[index]
+        hf = h5py.File(self.h5_file, 'r')
+        # rppg
+        # X = torch.from_numpy(hf['rppg'][:,self.idx_list[index]]).view(1,self.win_len).float()
+        # Y = torch.from_numpy(hf['label'][:,self.idx_list[index]]).float()
+        # ID = torch.from_numpy(hf['subject_idx'][:,self.idx_list[index]])
+        # ppg
+        X = torch.from_numpy(hf['ppg'][self.idx_list[index],:]).view(1,self.win_len).float()
+        Y = torch.from_numpy(hf['label'][self.idx_list[index],:]).float()
+        ID = torch.from_numpy(hf['subject_idx'][self.idx_list[index],:])
+        return X, Y, ID
+'''
+class MyDataSet(Dataset):
+    def __init__(self, hf, idx_list, win_len):
+        self.hf = hf
+        self.idx_list = idx_list
+        self.win_len = win_len
 
-def create_dataset(h5_dir, basename, win_len=875, batch_size=32, N_train=512, N_val=128, N_test=128,
+    def __len__(self):
+        return len(self.idx_list)
+
+    def __getitem__(self, index):
+        X = torch.from_numpy(self.hf['rppg'][:,self.idx_list[index]]).view(1,self.win_len).float()
+        Y = torch.from_numpy(self.hf['label'][:,self.idx_list[index]]).float()
+        ID = torch.from_numpy(self.hf['subject_idx'][:,self.idx_list[index]])
+        # X = torch.from_numpy(hf['ppg'][self.idx_list[index],:]).view(1,self.win_len).float()
+        # Y = torch.from_numpy(hf['label'][self.idx_list[index],:]).float()
+        # ID = torch.from_numpy(hf['subject_idx'][self.idx_list[index],:])
+        return X, Y, ID
+'''
+def create_dataset(h5_dir, basename, win_len=875, batch_size=32, N_train=1e6, N_val=2.5e5, N_test=2.5e5,
                     divide_by_subject=True):
 
     N_train = int(N_train)
@@ -90,7 +116,6 @@ def create_dataset(h5_dir, basename, win_len=875, batch_size=32, N_train=512, N_
         subject_idx = np.squeeze(np.array(f.get('/subject_idx')))
 
     N_samp_total = BP.shape[1] # ppg
-    # N_samp_total = BP.shape[0] # rppg
     subject_idx = subject_idx[:N_samp_total]
 
     # Divide the dataset into training, validation and test set
@@ -138,36 +163,22 @@ def create_dataset(h5_dir, basename, win_len=875, batch_size=32, N_train=512, N_
     train_set = pd.DataFrame(d)
     train_set.to_csv(csv_path + basename + '_testset.csv')
 
-    with h5py.File(h5_file, 'r') as f:
-        # load ppg and BP data as well as the subject numbers the samples belong to
-        ppg_h5 = np.array(f.get('/ppg'))
-        # ppg_h5 = np.array(f.get('/rppg'))
-        BP = np.array(f.get('/label'))
-        subject_idx = np.array(f.get('/subject_idx'))
+    dataset_train = MyDataSet(h5_file, idx_train, win_len)
+    dataset_val = MyDataSet(h5_file, idx_val, win_len)
+    dataset_test = MyDataSet(h5_file, idx_test, win_len)
 
-        # rppg
-        # ppg_h5 = np.transpose(ppg_h5)
-        # BP = np.transpose(BP)
-        # subject_idx = np.transpose(subject_idx)
-
-        ppg_h5 = torch.from_numpy(ppg_h5).view(-1,1,win_len).float()
-        BP = torch.from_numpy(BP).view(-1,2).float()
-        subject_idx = torch.from_numpy(subject_idx).view(-1,1)
-        print("Data Set")
-        print(ppg_h5.shape)
-        print(BP.shape)
-
-        dataset_train = MyDataSet(ppg_h5[idx_train,:], BP[idx_train,:], subject_idx[idx_train,:])
-        dataset_val = MyDataSet(ppg_h5[idx_val,:], BP[idx_val,:], subject_idx[idx_val,:])
-        dataset_test = MyDataSet(ppg_h5[idx_test,:], BP[idx_test,:], subject_idx[idx_test,:])
+    # hf = h5py.File(h5_file, 'r')
+    # dataset_train = MyDataSet(hf, idx_train, win_len)
+    # dataset_val = MyDataSet(hf, idx_val, win_len)
+    # dataset_test = MyDataSet(hf, idx_test, win_len)
 
     return dataset_train, dataset_val, dataset_test
 
 def get_model(architecture, input_shape, UseDerivative=False):
     print('debug architecture', architecture)
     return {
-        'resnet': ResNet50_1D(input_shape, UseDerivative=UseDerivative),
-        'alexnet': AlexNet_1D(input_shape, UseDerivative=UseDerivative),
+        # 'resnet': ResNet50_1D(input_shape, UseDerivative=UseDerivative),
+        # 'alexnet': AlexNet_1D(input_shape, UseDerivative=UseDerivative),
         # 'slapnicar' : raw_signals_deep_ResNet(input_shape, UseDerivative=UseDerivative),
         'lstm' : LSTM()
     }[architecture]
@@ -181,11 +192,11 @@ def ppg_train_mimic_iii(architecture,
                         experiment_name,
                         win_len=875,
                         batch_size=32,
-                        lr = None,
-                        N_epochs = 20,
-                        Ntrain=512,
-                        Nval=128,
-                        Ntest=128,
+                        lr=None,
+                        N_epochs=20,
+                        Ntrain=1e6,
+                        Nval=2.5e5,
+                        Ntest=2.5e5,
                         UseDerivative=False,
                         earlystopping=True):
     
@@ -201,8 +212,7 @@ def ppg_train_mimic_iii(architecture,
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(device)
 
-    train_dataset, val_dataset, test_dataset = create_dataset(data_dir, basename, 
-                                                                win_len=win_len, batch_size=batch_size)
+    train_dataset, val_dataset, test_dataset = create_dataset(data_dir, basename, win_len=win_len, batch_size=batch_size)
     trainloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
     valloader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=0)
     testloader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=0)
@@ -212,7 +222,7 @@ def ppg_train_mimic_iii(architecture,
     # load the neurarchitecture
     model = get_model(architecture, data_in_shape, UseDerivative=UseDerivative).to(device)
     # print(model.summary())
-
+    '''
     # callback for logging training and validation results
     csvLogger_cb = tf.keras.callbacks.CSVLogger(
         filename=join(results_dir,experiment_name + '_learningcurve.csv')
@@ -237,7 +247,7 @@ def ppg_train_mimic_iii(architecture,
         patience=10,
         restore_best_weights=True
     )
-
+    '''
     # define Adam optimizer
     if lr is None:
         optimizer = optim.Adam(model.parameters())
@@ -251,12 +261,12 @@ def ppg_train_mimic_iii(architecture,
     #     loss = tf.keras.losses.mean_squared_error,
     #     metrics = [['mae'], ['mae']]
     # )
-
+    '''
     cb_list = [checkpoint_cb,
                tensorbard_cb,
                csvLogger_cb,
                EarlyStopping_cb if earlystopping == True else []]
-
+    '''
     # Perform Training and Validation
     # history = model.fit(
     #     train_dataset,
@@ -289,7 +299,7 @@ def ppg_train_mimic_iii(architecture,
 
             # print statistics
             running_loss += loss.item()
-            if (i % num_batches == (num_batches - 1)) and (epoch%1 == 0):
+            if (i % 100 == (100 - 1)) and (epoch%1 == 0):
                 print("[%d, %5d] loss: %.4f" %
                       (epoch + 1, i + 1, running_loss/num_batches))
                 RunningLossSave = np.append(RunningLossSave, running_loss/num_batches)
@@ -319,8 +329,8 @@ def ppg_train_mimic_iii(architecture,
             ValidationLoss = running_loss/(total/batch_size)
             ValidationLossSave = np.append(ValidationLossSave, ValidationLoss)
             if epoch == 0:
-                    LeastValidLoss = ValidationLoss
-                    torch.save(model.state_dict(), PathSaveBestValid)
+                LeastValidLoss = ValidationLoss
+                torch.save(model.state_dict(), PathSaveBestValid)
             if ValidationLoss < LeastValidLoss:
                 print("Accuracy on the test set %d: loss: %.4f" % (total, ValidationLoss))
                 if ValidationLoss < LeastValidLoss:
@@ -356,10 +366,10 @@ def ppg_train_mimic_iii(architecture,
             print("Test Data")
             print(labels.shape)
             print(outputs.shape)
-            TestBatchResult = pd.DataFrame({'SBP_true' : labels[:,0].numpy(),
-                                        'DBP_true' : labels[:,1].numpy(),
-                                        'SBP_est' : np.squeeze(outputs[:,0]),
-                                        'DBP_est' : np.squeeze(outputs[:,1])})
+            TestBatchResult = pd.DataFrame({'SBP_true' : labels[:,0].cpu().numpy(),
+                                            'DBP_true' : labels[:,1].cpu().numpy(),
+                                            'SBP_est' : np.squeeze(outputs[:,0].cpu().numpy()),
+                                            'DBP_est' : np.squeeze(outputs[:,1].cpu().numpy())})
             test_results = test_results.append(TestBatchResult)
 
     ResultsFile = join(results_dir,experiment_name + '_test_results.csv')
